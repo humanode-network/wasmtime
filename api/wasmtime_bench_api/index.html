@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A C API for benchmarking Wasmtime’s WebAssembly compilation, instantiation, and execution."><meta name="keywords" content="rust, rustlang, rust-lang, wasmtime_bench_api"><title>wasmtime_bench_api - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script id="default-settings"></script><script src="../storage.js"></script><script src="../crates.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../wasmtime_bench_api/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><p class="location">Crate wasmtime_bench_api</p><div class="block version"><p>Version 0.19.0</p></div><div class="sidebar-elems"><a id="all-types" href="all.html"><p>See all wasmtime_bench_api's items</p></a><div class="block items"><ul><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class="location"></p><div id="sidebar-vars" data-name="wasmtime_bench_api" data-ty="mod" data-relpath="../"></div></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="">wasmtime_bench_api</a><button id="copy-path" onclick="copy_path(this)">⎘</button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/wasmtime_bench_api/lib.rs.html#1-320" title="goto source code">[src]</a></span></h1><div class="docblock"><p>A C API for benchmarking Wasmtime’s WebAssembly compilation, instantiation,
+and execution.</p>
+<p>The API expects sequential calls to:</p>
+<ul>
+<li><code>wasm_bench_create</code></li>
+<li><code>wasm_bench_compile</code></li>
+<li><code>wasm_bench_instantiate</code></li>
+<li><code>wasm_bench_execute</code></li>
+<li><code>wasm_bench_free</code></li>
+</ul>
+<p>You may repeat this sequence of calls multiple times to take multiple
+measurements of compilation, instantiation, and execution time within a
+single process.</p>
+<p>All API calls must happen on the same thread.</p>
+<p>Functions which return pointers use null as an error value. Function which
+return <code>int</code> use <code>0</code> as OK and non-zero as an error value.</p>
+<h1 id="example" class="section-header"><a href="#example">Example</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">std::ptr</span>;
+<span class="kw">use</span> <span class="ident">wasmtime_bench_api</span>::<span class="kw-2">*</span>;
+
+<span class="kw">let</span> <span class="ident">working_dir</span> <span class="op">=</span> <span class="ident">std::env::current_dir</span>().<span class="ident">unwrap</span>().<span class="ident">display</span>().<span class="ident">to_string</span>();
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bench_api</span> <span class="op">=</span> <span class="ident">ptr::null_mut</span>();
+<span class="kw">unsafe</span> {
+    <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">wasm_bench_create</span>(<span class="ident">working_dir</span>.<span class="ident">as_ptr</span>(), <span class="ident">working_dir</span>.<span class="ident">len</span>(), <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bench_api</span>);
+    <span class="macro">assert_eq!</span>(<span class="ident">code</span>, <span class="ident">OK</span>);
+    <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">bench_api</span>.<span class="ident">is_null</span>());
+};
+
+<span class="kw">let</span> <span class="ident">wasm</span> <span class="op">=</span> <span class="ident">wat::parse_bytes</span>(<span class="string">br#&quot;
+    (module
+        (func $bench_start (import &quot;bench&quot; &quot;start&quot;))
+        (func $bench_end (import &quot;bench&quot; &quot;end&quot;))
+        (func $start (export &quot;_start&quot;)
+            call $bench_start
+            i32.const 1
+            i32.const 2
+            i32.add
+            drop
+            call $bench_end
+        )
+    )
+&quot;#</span>).<span class="ident">unwrap</span>();
+
+<span class="comment">// Start your compilation timer here.</span>
+<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">wasm_bench_compile</span>(<span class="ident">bench_api</span>, <span class="ident">wasm</span>.<span class="ident">as_ptr</span>(), <span class="ident">wasm</span>.<span class="ident">len</span>()) };
+<span class="comment">// End your compilation timer here.</span>
+<span class="macro">assert_eq!</span>(<span class="ident">code</span>, <span class="ident">OK</span>);
+
+<span class="comment">// The Wasm benchmark will expect us to provide functions to start (&quot;bench&quot;</span>
+<span class="comment">// &quot;start&quot;) and stop (&quot;bench&quot; &quot;stop&quot;) the measurement counters/timers during</span>
+<span class="comment">// execution.</span>
+<span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">bench_start</span>() {
+    <span class="comment">// Start your execution timer here.</span>
+}
+<span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">bench_stop</span>() {
+    <span class="comment">// End your execution timer here.</span>
+}
+
+<span class="comment">// Start your instantiation timer here.</span>
+<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">wasm_bench_instantiate</span>(<span class="ident">bench_api</span>, <span class="ident">bench_start</span>, <span class="ident">bench_stop</span>) };
+<span class="comment">// End your instantiation timer here.</span>
+<span class="macro">assert_eq!</span>(<span class="ident">code</span>, <span class="ident">OK</span>);
+
+<span class="comment">// No need to start timers for the execution since, by convention, the timer</span>
+<span class="comment">// functions we passed during instantiation will be called by the benchmark</span>
+<span class="comment">// at the appropriate time (before and after the benchmarked section).</span>
+<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">wasm_bench_execute</span>(<span class="ident">bench_api</span>) };
+<span class="macro">assert_eq!</span>(<span class="ident">code</span>, <span class="ident">OK</span>);
+
+<span class="kw">unsafe</span> {
+    <span class="ident">wasm_bench_free</span>(<span class="ident">bench_api</span>);
+}</pre></div>
+</div><h2 id="constants" class="section-header"><a href="#constants">Constants</a></h2>
+<table><tr class="module-item"><td><a class="constant" href="constant.ERR.html" title="wasmtime_bench_api::ERR constant">ERR</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="constant" href="constant.OK.html" title="wasmtime_bench_api::OK constant">OK</a></td><td class="docblock-short"></td></tr></table><h2 id="functions" class="section-header"><a href="#functions">Functions</a></h2>
+<table><tr class="module-item"><td><a class="fn" href="fn.wasm_bench_compile.html" title="wasmtime_bench_api::wasm_bench_compile fn">wasm_bench_compile</a></td><td class="docblock-short"><p>Compile the Wasm benchmark module.</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.wasm_bench_create.html" title="wasmtime_bench_api::wasm_bench_create fn">wasm_bench_create</a></td><td class="docblock-short"><p>Exposes a C-compatible way of creating the engine from the bytes of a single
+Wasm module.</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.wasm_bench_execute.html" title="wasmtime_bench_api::wasm_bench_execute fn">wasm_bench_execute</a></td><td class="docblock-short"><p>Execute the Wasm benchmark module.</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.wasm_bench_free.html" title="wasmtime_bench_api::wasm_bench_free fn">wasm_bench_free</a></td><td class="docblock-short"><p>Free the engine state allocated by this library.</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.wasm_bench_instantiate.html" title="wasmtime_bench_api::wasm_bench_instantiate fn">wasm_bench_instantiate</a></td><td class="docblock-short"><p>Instantiate the Wasm benchmark module.</p>
+</td></tr></table><h2 id="types" class="section-header"><a href="#types">Type Definitions</a></h2>
+<table><tr class="module-item"><td><a class="type" href="type.ExitCode.html" title="wasmtime_bench_api::ExitCode type">ExitCode</a></td><td class="docblock-short"></td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../" data-current-crate="wasmtime_bench_api" data-search-js="../search-index.js"></div>
+    <script src="../main.js"></script></body></html>

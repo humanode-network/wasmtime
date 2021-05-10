@@ -1,0 +1,385 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Multi-threading - Wasmtime</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="tutorial.html"><strong aria-hidden="true">2.</strong> Tutorial</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="tutorial-create-hello-world.html"><strong aria-hidden="true">2.1.</strong> Creating hello-world.wasm</a></li><li class="chapter-item expanded "><a href="tutorial-run-hello-world.html"><strong aria-hidden="true">2.2.</strong> Running hello-world.wasm</a></li></ol></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">3.</strong> Examples</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="examples-markdown.html"><strong aria-hidden="true">3.1.</strong> Markdown Parser</a></li><li class="chapter-item expanded "><a href="examples-profiling.html"><strong aria-hidden="true">3.2.</strong> Profiling WebAssembly</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="examples-profiling-perf.html"><strong aria-hidden="true">3.2.1.</strong> Profiling with Perf</a></li><li class="chapter-item expanded "><a href="examples-profiling-vtune.html"><strong aria-hidden="true">3.2.2.</strong> Profiling with VTune</a></li></ol></li><li class="chapter-item expanded "><a href="examples-rust-embed.html"><strong aria-hidden="true">3.3.</strong> Embedding in Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="examples-rust-hello-world.html"><strong aria-hidden="true">3.3.1.</strong> Hello, world!</a></li><li class="chapter-item expanded "><a href="examples-rust-gcd.html"><strong aria-hidden="true">3.3.2.</strong> Calculating the GCD</a></li><li class="chapter-item expanded "><a href="examples-rust-memory.html"><strong aria-hidden="true">3.3.3.</strong> Using Linear Memory</a></li><li class="chapter-item expanded "><a href="examples-rust-wasi.html"><strong aria-hidden="true">3.3.4.</strong> WASI</a></li><li class="chapter-item expanded "><a href="examples-rust-linking.html"><strong aria-hidden="true">3.3.5.</strong> Linking Modules</a></li><li class="chapter-item expanded "><a href="examples-rust-debugging.html"><strong aria-hidden="true">3.3.6.</strong> Debugging</a></li><li class="chapter-item expanded "><a href="examples-rust-multi-value.html"><strong aria-hidden="true">3.3.7.</strong> Using Multi-Value</a></li><li class="chapter-item expanded "><a href="examples-rust-multithreading.html" class="active"><strong aria-hidden="true">3.3.8.</strong> Multi-threading</a></li></ol></li><li class="chapter-item expanded "><a href="examples-c-embed.html"><strong aria-hidden="true">3.4.</strong> Embedding in C</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="examples-c-hello-world.html"><strong aria-hidden="true">3.4.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="examples-c-gcd.html"><strong aria-hidden="true">3.4.2.</strong> Calculating the GCD</a></li><li class="chapter-item expanded "><a href="examples-c-memory.html"><strong aria-hidden="true">3.4.3.</strong> Using Linear Memory</a></li><li class="chapter-item expanded "><a href="examples-c-wasi.html"><strong aria-hidden="true">3.4.4.</strong> WASI</a></li><li class="chapter-item expanded "><a href="examples-c-linking.html"><strong aria-hidden="true">3.4.5.</strong> Linking Modules</a></li><li class="chapter-item expanded "><a href="examples-c-debugging.html"><strong aria-hidden="true">3.4.6.</strong> Debugging</a></li><li class="chapter-item expanded "><a href="examples-c-multi-value.html"><strong aria-hidden="true">3.4.7.</strong> Using Multi-Value</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="lang.html"><strong aria-hidden="true">4.</strong> Using WebAssembly from your language</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="lang-rust.html"><strong aria-hidden="true">4.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="lang-c.html"><strong aria-hidden="true">4.2.</strong> C</a></li><li class="chapter-item expanded "><a href="lang-python.html"><strong aria-hidden="true">4.3.</strong> Python</a></li><li class="chapter-item expanded "><a href="lang-dotnet.html"><strong aria-hidden="true">4.4.</strong> .NET</a></li><li class="chapter-item expanded "><a href="lang-go.html"><strong aria-hidden="true">4.5.</strong> Go</a></li><li class="chapter-item expanded "><a href="lang-bash.html"><strong aria-hidden="true">4.6.</strong> Bash</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">5.</strong> Using the wasmtime CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="cli-install.html"><strong aria-hidden="true">5.1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="cli-options.html"><strong aria-hidden="true">5.2.</strong> CLI Options</a></li><li class="chapter-item expanded "><a href="cli-cache.html"><strong aria-hidden="true">5.3.</strong> Cache Configuration</a></li></ol></li><li class="chapter-item expanded "><a href="wasm.html"><strong aria-hidden="true">6.</strong> Writing WebAssembly</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="wasm-rust.html"><strong aria-hidden="true">6.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="wasm-c.html"><strong aria-hidden="true">6.2.</strong> C/C++</a></li><li class="chapter-item expanded "><a href="wasm-assemblyscript.html"><strong aria-hidden="true">6.3.</strong> AssemblyScript</a></li><li class="chapter-item expanded "><a href="wasm-wat.html"><strong aria-hidden="true">6.4.</strong> WebAssembly Text Format (*.wat)</a></li><li class="chapter-item expanded "><a href="wasm-markdown.html"><strong aria-hidden="true">6.5.</strong> Example: Markdown Parser</a></li></ol></li><li class="chapter-item expanded "><a href="stability.html"><strong aria-hidden="true">7.</strong> Stability</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stability-release.html"><strong aria-hidden="true">7.1.</strong> Release Process</a></li><li class="chapter-item expanded "><a href="stability-platform-support.html"><strong aria-hidden="true">7.2.</strong> Platform Support</a></li><li class="chapter-item expanded "><a href="stability-wasm-proposals-support.html"><strong aria-hidden="true">7.3.</strong> Wasm Proposals Support</a></li></ol></li><li class="chapter-item expanded "><a href="security.html"><strong aria-hidden="true">8.</strong> Security</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="security-disclosure.html"><strong aria-hidden="true">8.1.</strong> Disclosure Policy</a></li><li class="chapter-item expanded "><a href="security-sandboxing.html"><strong aria-hidden="true">8.2.</strong> Sandboxing</a></li></ol></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">9.</strong> Contributing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contributing-building.html"><strong aria-hidden="true">9.1.</strong> Building</a></li><li class="chapter-item expanded "><a href="contributing-testing.html"><strong aria-hidden="true">9.2.</strong> Testing</a></li><li class="chapter-item expanded "><a href="contributing-fuzzing.html"><strong aria-hidden="true">9.3.</strong> Fuzzing</a></li><li class="chapter-item expanded "><a href="contributing-ci.html"><strong aria-hidden="true">9.4.</strong> CI</a></li><li class="chapter-item expanded "><a href="contributing-coding-guidelines.html"><strong aria-hidden="true">9.5.</strong> Coding Guidelines</a></li><li class="chapter-item expanded "><a href="contributing-development-process.html"><strong aria-hidden="true">9.6.</strong> Development Process</a></li><li class="chapter-item expanded "><a href="contributing-release-process.html"><strong aria-hidden="true">9.7.</strong> Release Process</a></li><li class="chapter-item expanded "><a href="contributing-implementing-wasm-proposals.html"><strong aria-hidden="true">9.8.</strong> Implementing Wasm Proposals</a></li><li class="chapter-item expanded "><a href="contributing-governance.html"><strong aria-hidden="true">9.9.</strong> Governance</a></li><li class="chapter-item expanded "><a href="contributing-coc.html"><strong aria-hidden="true">9.10.</strong> Code of Conduct</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Wasmtime</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#multi-threading" id="multi-threading">Multi-threading</a></h1>
+<p>When using Rust you're effectively immune from a whole class of threading issues
+such as data races due to the inherent checks in the compiler and traits like
+<code>Send</code> and <code>Sync</code>. The <code>wasmtime</code> API, like other safe Rust APIs, is 100% safe
+to use relative to threading if you never have any <code>unsafe</code> yourself. In
+addition to all of this, however, it's important to be aware of the limitations
+of <code>wasmtime</code> types and how this might affect your embedding use case.</p>
+<h2><a class="header" href="#types-that-are-send-and-sync" id="types-that-are-send-and-sync">Types that are <code>Send</code> and <code>Sync</code></a></h2>
+<p>Wasmtime has a number of types which implement both the <code>Send</code> and <code>Sync</code>
+traits:</p>
+<ul>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Config.html"><code>Config</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Engine.html"><code>Engine</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Module.html"><code>Module</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Trap.html"><code>Trap</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.InterruptHandle.html"><code>InterruptHandle</code></a></li>
+<li>Type-descriptions of items
+<ul>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.ValType.html"><code>ValType</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.ExportType.html"><code>ExportType</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.ExternType.html"><code>ExternType</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.ImportType.html"><code>ImportType</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.FuncType.html"><code>FuncType</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.GlobalType.html"><code>GlobalType</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.MemoryType.html"><code>MemoryType</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.ModuleType.html"><code>ModuleType</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.TableType.html"><code>TableType</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.InstanceType.html"><code>InstanceType</code></a></li>
+</ul>
+</li>
+</ul>
+<p>These types, as the traits imply, are safe to send and share across threads.
+Note that the major types to call out here are <code>Module</code> and <code>Engine</code>. The
+<code>Engine</code> is important because it enables sharing compilation configuration for
+an entire application. Each <code>Engine</code> is intended to be long-lived for this
+reason.</p>
+<p>Additionally <code>Module</code>, the compiled version of a WebAssembly module, is safe to
+send and share across threads. This notably means that you can compile a module
+once and then instantiate it on multiple threads simultaneously. There's no need
+to recompile a module on each thread.</p>
+<h2><a class="header" href="#types-that-are-neither-send-nor-sync" id="types-that-are-neither-send-nor-sync">Types that are neither <code>Send</code> nor <code>Sync</code></a></h2>
+<p>Wasmtime also has a number of types which are thread-&quot;unsafe&quot;. These types do
+not have the <code>Send</code> or <code>Sync</code> traits implemented which means that you won't be
+able to send them across threads by default.</p>
+<ul>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Store.html"><code>Store</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Linker.html"><code>Linker</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Instance.html"><code>Instance</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Extern.html"><code>Extern</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Func.html"><code>Func</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Global.html"><code>Global</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Table.html"><code>Table</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Memory.html"><code>Memory</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.Val.html"><code>Val</code></a></li>
+<li><a href="https://docs.wasmtime.dev/api/wasmtime/struct.ExternRef.html"><code>ExternRef</code></a></li>
+</ul>
+<p>These types are all considered as &quot;connected to a store&quot;, and everything
+connected to a store is neither <code>Send</code> nor <code>Sync</code>. The Rust compiler will not
+allow you to have values of these types cross thread boundaries or get shared
+between multiple threads. Doing so would require some form of <code>unsafe</code> glue.</p>
+<p>It's important to note that the WebAssembly specification itself fundamentally
+limits some of the concurrent possibilities here. For example it's not allowed
+to concurrently call <code>global.set</code> or <code>table.set</code> on the same global/table. This
+means that Wasmtime is designed to prevent at the very least concurrent usage of
+these primitives.</p>
+<p>Apart from the WebAssembly specification, though, Wasmtime additionally has some
+fundamental design decision which results in these types not implementing either
+<code>Send</code> or <code>Sync</code>:</p>
+<ul>
+<li>
+<p>All objects are independently-owned <code>'static</code> values that internally retain
+anything necessary to implement the API provided. This necessitates some form
+of reference counting, and also requires the usage of non-atomic reference
+counting. Once reference counting is used Rust only allows shared references
+(<code>&amp;T</code>) to the internals, and due to the wasm restriction of disallowing
+concurrent usage non-atomic reference counting is used.</p>
+</li>
+<li>
+<p>Insertion of user-defined objects into <code>Store</code> does not require all objects to
+be either <code>Send</code> or <code>Sync</code>. For example <code>Func::wrap</code> will insert the
+host-defined function into the <code>Store</code>, but there are no extra trait bounds on
+this. Similar restrictions apply to <code>Store::set</code> as well.</p>
+</li>
+<li>
+<p>The implementation of <code>ExternRef</code> allows arbitrary <code>'static</code> types <code>T</code> to get
+wrapped up and is also implemented with non-atomic reference counting.</p>
+</li>
+</ul>
+<p>Overall the design decisions of Wasmtime itself leads all of these types to not
+implement either the <code>Send</code> or <code>Sync</code> traits.</p>
+<h2><a class="header" href="#multithreading-without-send" id="multithreading-without-send">Multithreading without <code>Send</code></a></h2>
+<p>Due to the lack of <code>Send</code> on types like <code>Store</code> and everything connected, it's
+not always as trivial to add multithreaded execution of WebAssembly to an
+embedding of Wasmtime as it is for other Rust code in general. The exact way
+that multithreading could work for you depends on your specific embedding, but
+some possibilities include:</p>
+<ul>
+<li>
+<p>If your workload involves instantiating a singular wasm module on a separate
+thread, then it will need to live on that thread and communicate to other
+threads via threadsafe means (e.g. channels, locks/queues, etc).</p>
+</li>
+<li>
+<p>If you have something like a multithreaded web server, for example, then the
+WebAssembly executed for each request will need to live within the thread that
+the original <code>Store</code> was created on. This could be multithreaded, though, by
+having a pool of threads executing WebAssembly. Each request would have a
+scheduling decision of which pool to route to which would be up to the
+application. In situations such as this it's recommended to <a href="https://docs.wasmtime.dev/api/wasmtime/struct.Config.html#method.consume_fuel">enable fuel
+consumption</a>
+as well as <a href="https://docs.wasmtime.dev/api/wasmtime/struct.Store.html#method.out_of_fuel_async_yield">yielding when out of
+fuel</a>.
+This will ensure that no one request entirely hogs a thread executing
+WebAssembly and all requests scheduled onto that thread are able to execute.
+It's also worth pointing out that the threads executing WebAssembly may or may
+not be the same as the threads performing I/O for your server requests.</p>
+</li>
+<li>
+<p>If absolutely required, Wasmtime is engineered such that it is dynamically safe
+to move a <code>Store</code> as a whole to a separate thread. This option is not
+recommended due to its complexity, but it is one that Wasmtime tests in CI and
+considers supported. The principle here is that all objects connected to a
+<code>Store</code> are safe to move to a separate thread <em>if and only if</em>:</p>
+<ul>
+<li>
+<p>All objects are moved all at once. For example you can't leave behind
+references to a <code>Func</code> or perhaps a <code>Store</code> in TLS.</p>
+</li>
+<li>
+<p>All host objects living inside of a store (e.g. those inserted via
+<code>Store::set</code> or <code>Func::wrap</code>) implement the <code>Send</code> trait.</p>
+</li>
+</ul>
+<p>If these requirements are met it is technically safe to move a store and its
+objects between threads. The reason that this strategy isn't recommended,
+however, is that you will receive no assistance from the Rust compiler in
+verifying that the transfer across threads is indeed actually safe. This will
+require auditing your embedding of Wasmtime itself to ensure it meets these
+requirements.</p>
+<p>It's important to note that the requirements here also apply to the futures
+returned from <code>Func::call_async</code>. These futures are not <code>Send</code> due to them
+closing over <code>Store</code>-related values. In addition to the above requirements
+though to safely send across threads embedders must <em>also</em> ensure that any
+host futures returned from <code>Func::wrapN_async</code> are actually <code>Send</code> and safe to
+send across threads. Again, though, there is no compiler assistance in doing
+this.</p>
+</li>
+</ul>
+<p>Overall the recommended story for multithreading with Wasmtime is &quot;don't move a
+<code>Store</code> between threads&quot; and to architect your application around this
+assumption.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="examples-rust-multi-value.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="examples-c-embed.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="examples-rust-multi-value.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="examples-c-embed.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

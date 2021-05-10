@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["builder",""],["builder_without_flags",""],["lookup","Look for an ISA for the given `triple`. Return a builder that can create a corresponding `TargetIsa`."]]});

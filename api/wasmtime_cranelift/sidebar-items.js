@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["blank_sig",""],["func_signature",""],["indirect_signature",""],["push_types",""],["wasmtime_call_conv",""]],"struct":[["Cranelift","A compiler that compiles a WebAssembly module with Cranelift, translating the Wasm to Cranelift IR, optimizing it and then translating to assembly."]]});
